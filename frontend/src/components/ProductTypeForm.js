@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import { Grid, Typography, Button, Box, Snackbar } from '@material-ui/core';
+import React, { useState, useReducer } from 'react';
+import { Grid, Typography, Button, Box, Snackbar, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../util/validators';
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, validate } from '../util/validators';
 import { preserializeFormInputs } from '../util/httpParsers';
-import Input from './common/Input';
-import { useFormData } from '../hooks/useFormData';
 
 const useStyles = makeStyles(theme => ({
   buttonsContainer: {
@@ -21,30 +19,92 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ProductTypeForm = () => {
-  const INITIAL_INPUTS = {
+const INITIAL_STATE = {
+  inputs: {
     name: {
       value: '',
-      isValid: false
+      valid: false,
+      validators: [VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]
     },
     description: {
       value: '',
-      isValid: true
+      valid: true
+    }
+  },
+  formValid: false
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'valueChanged': {
+      const { prop, value } = action.payload;
+      const valid = validate(value, state.inputs[prop].validators);
+      let formValid = true;
+      for (const field in state.inputs) {
+        formValid = formValid && (
+          field === prop ? valid : state.inputs[field].valid
+        );
+      }
+
+      return {
+        ...state,
+        inputs: {
+          ...state.inputs,
+          [prop]: {
+            ...state.inputs[prop],
+            value,
+            valid
+          }
+        },
+        formValid
+      };
+    }
+    case 'blurred': {
+      const { prop } = action.payload;
+      return {
+        ...state,
+        inputs: {
+          ...state.inputs,
+          [prop]: {
+            ...state.inputs[prop],
+            blurred: true
+          }
+        }
+      };
+    }
+    case 'formCleared': {
+      return INITIAL_STATE;
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const ProductTypeForm = () => {
+  const classes = useStyles();
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const inputChangeHandler = event => {
+    dispatch({ type: 'valueChanged', payload: { prop: event.target.name, value: event.target.value } });
+  };
+
+  const inputBlurHandler = event => {
+    if (!state.inputs[event.target.name].blurred) {
+      dispatch({ type: 'blurred', payload: { prop: event.target.name } });
     }
   };
 
-  const classes = useStyles();
-  const [formState, inputHandler, setFormData] = useFormData(INITIAL_INPUTS, false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  const onFormSubmit = async event => {
+  const formSubmitHandler = async event => {
     event.preventDefault();
 
-    const data = preserializeFormInputs(formState.inputs);
+    const data = preserializeFormInputs(state.inputs);
 
     try {
       await axios.post("http://localhost:8080/api/product_types", data);
       setSnackbarOpen(true);
+      dispatch({ type: 'formCleared' });
     } catch (error) {
       console.error('Entity was not saved: ' + error);
     }
@@ -60,7 +120,7 @@ const ProductTypeForm = () => {
 
   return (
     <React.Fragment>
-      <form onSubmit={onFormSubmit}>
+      <form onSubmit={formSubmitHandler}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography align="center" variant="h5" className={classes.title}>
@@ -68,30 +128,38 @@ const ProductTypeForm = () => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Input
+            <TextField
               id="standard"
               label="Name"
               name="name"
               fullWidth
-              validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
-              errorText="The input value is not valid. It is required and it should have at least 5 characters."
-              onInput={inputHandler}
+              value={state.inputs.name.value}
+              onChange={inputChangeHandler}
+              onBlur={inputBlurHandler}
+              error={!state.inputs.name.valid && state.inputs.name.blurred}
+              helperText={
+                !state.inputs.name.valid && state.inputs.name.blurred
+                  ? "The input value is not valid. It is required and it should have at least 5 characters."
+                  : null
+              }
             />
           </Grid>
           <Grid item xs={12}>
-            <Input
+            <TextField
               id="standard"
               label="Description"
               name="description"
               fullWidth
               multiline
-              onInput={inputHandler}
+              value={state.inputs.description.value}
+              onChange={inputChangeHandler}
+              onBlur={inputBlurHandler}
             />
           </Grid>
         </Grid>
         <Box className={classes.buttonsContainer}>
           <Button
-            disabled={!formState.isValid}
+            disabled={!state.formValid}
             variant="contained"
             color="primary"
             size="large"
