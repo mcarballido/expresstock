@@ -3,8 +3,8 @@ import { Grid, Typography, Button, Box, Snackbar, TextField } from '@material-ui
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, validate } from '../util/validators';
-import { preserializeFormInputs } from '../util/httpParsers';
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, validate } from '../../util/validators';
+import { preserializeFormInputs } from '../../util/httpParsers';
 
 const useStyles = makeStyles(theme => ({
   buttonsContainer: {
@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex'
   },
   title: {
-    marginTop: 32
+    marginTop: 100
   },
   button: {
     marginTop: 32
