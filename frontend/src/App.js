@@ -18,11 +18,11 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import StorageIcon from "@material-ui/icons/Storage";
 import { makeStyles } from "@material-ui/core/styles";
 
-import ProductTypeForm from "./components/productType/ProductTypeForm";
+import ProductTypeList from "./components/productType/ProductTypeList";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 
 const App = () => {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const drawerOpenHandler = () => {
     setOpen(true);
@@ -74,7 +74,7 @@ const App = () => {
 
   return (
     <React.Fragment>
-      <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open })}>
+      <AppBar position="sticky" className={clsx(classes.appBar, { [classes.appBarShift]: open })}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -95,9 +95,7 @@ const App = () => {
         variant="persistent"
         anchor="left"
         open={open}
-        classes={{
-          paper: classes.drawerPaper
-        }}
+        classes={{ paper: classes.drawerPaper }}
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={drawerCloseHandler}>
@@ -114,8 +112,9 @@ const App = () => {
           </ListItem>
         </List>
       </Drawer>
+      {/* Container */}
       <Container maxWidth="md">
-        <ProductTypeForm />
+        <ProductTypeList />
       </Container>
     </React.Fragment>
   );
