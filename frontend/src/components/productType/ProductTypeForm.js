@@ -1,15 +1,15 @@
-import React, { useState, useReducer } from 'react';
-import { Grid, Typography, Button, Box, Snackbar, TextField } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios';
+import React, { useState, useReducer } from "react";
+import { Grid, Typography, Button, Box, Snackbar, TextField } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import axios from "axios";
 
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, validate } from '../../util/validators';
-import { preserializeFormInputs } from '../../util/httpParsers';
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, validate } from "../../util/validators";
+import { preserializeFormInputs } from "../../util/httpParsers";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   buttonsContainer: {
-    justifyContent: 'center',
-    display: 'flex'
+    justifyContent: "center",
+    display: "flex"
   },
   title: {
     marginTop: 100
@@ -22,12 +22,12 @@ const useStyles = makeStyles(theme => ({
 const INITIAL_STATE = {
   inputs: {
     name: {
-      value: '',
+      value: "",
       valid: false,
       validators: [VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]
     },
     description: {
-      value: '',
+      value: "",
       valid: true
     }
   },
@@ -36,14 +36,12 @@ const INITIAL_STATE = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'valueChanged': {
+    case "valueChanged": {
       const { prop, value } = action.payload;
       const valid = validate(value, state.inputs[prop].validators);
       let formValid = true;
       for (const field in state.inputs) {
-        formValid = formValid && (
-          field === prop ? valid : state.inputs[field].valid
-        );
+        formValid = formValid && (field === prop ? valid : state.inputs[field].valid);
       }
 
       return {
@@ -59,7 +57,7 @@ const reducer = (state, action) => {
         formValid
       };
     }
-    case 'blurred': {
+    case "blurred": {
       const { prop } = action.payload;
       return {
         ...state,
@@ -72,7 +70,7 @@ const reducer = (state, action) => {
         }
       };
     }
-    case 'formCleared': {
+    case "formCleared": {
       return INITIAL_STATE;
     }
     default: {
@@ -86,17 +84,17 @@ const ProductTypeForm = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const inputChangeHandler = event => {
-    dispatch({ type: 'valueChanged', payload: { prop: event.target.name, value: event.target.value } });
+  const inputChangeHandler = (event) => {
+    dispatch({ type: "valueChanged", payload: { prop: event.target.name, value: event.target.value } });
   };
 
-  const inputBlurHandler = event => {
+  const inputBlurHandler = (event) => {
     if (!state.inputs[event.target.name].blurred) {
-      dispatch({ type: 'blurred', payload: { prop: event.target.name } });
+      dispatch({ type: "blurred", payload: { prop: event.target.name } });
     }
   };
 
-  const formSubmitHandler = async event => {
+  const formSubmitHandler = async (event) => {
     event.preventDefault();
 
     const data = preserializeFormInputs(state.inputs);
@@ -104,14 +102,14 @@ const ProductTypeForm = () => {
     try {
       await axios.post("http://localhost:8080/api/product_types", data);
       setSnackbarOpen(true);
-      dispatch({ type: 'formCleared' });
+      dispatch({ type: "formCleared" });
     } catch (error) {
-      console.error('Entity was not saved: ' + error);
+      console.error("Entity was not saved: " + error);
     }
   };
 
   const snackbarCloseHandler = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 

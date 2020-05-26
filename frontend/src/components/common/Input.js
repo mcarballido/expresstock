@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { TextField } from '@material-ui/core';
+import React, { useState, useEffect } from "react";
+import { TextField } from "@material-ui/core";
 
-import { validate } from '../../util/validators';
+import { validate } from "../../util/validators";
 
-const Input = props => {
-  const [value, setValue] = useState(props.value || '');
+const Input = (props) => {
+  const [value, setValue] = useState(props.value || "");
   const [valid, setValid] = useState(!props.validators);
   const [blurred, setBlurred] = useState(false);
 
-  const inputChangeHandler = event => {
+  const inputChangeHandler = (event) => {
     const { value } = event.target;
 
     setValue(value);
@@ -32,7 +32,7 @@ const Input = props => {
         setValid(false);
       }
       setBlurred(true);
-    };
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import clsx from 'clsx';
+import React, { useState } from "react";
+import clsx from "clsx";
 import {
   Container,
   AppBar,
@@ -12,51 +12,51 @@ import {
   ListItemIcon,
   ListItemText,
   List
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import StorageIcon from '@material-ui/icons/Storage';
-import { makeStyles } from '@material-ui/core/styles';
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import StorageIcon from "@material-ui/icons/Storage";
+import { makeStyles } from "@material-ui/core/styles";
 
-import ProductTypeForm from './components/productType/ProductTypeForm';
+import ProductTypeForm from "./components/productType/ProductTypeForm";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(2)
   },
   hide: {
-    display: 'none',
+    display: "none"
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0,
+    flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth,
+    width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end"
   }
 }));
 
@@ -74,12 +74,7 @@ const App = () => {
 
   return (
     <React.Fragment>
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
+      <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open })}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -101,7 +96,7 @@ const App = () => {
         anchor="left"
         open={open}
         classes={{
-          paper: classes.drawerPaper,
+          paper: classes.drawerPaper
         }}
       >
         <div className={classes.drawerHeader}>
@@ -112,7 +107,9 @@ const App = () => {
         <Divider />
         <List>
           <ListItem button key="productTypes">
-            <ListItemIcon><StorageIcon /></ListItemIcon>
+            <ListItemIcon>
+              <StorageIcon />
+            </ListItemIcon>
             <ListItemText primary="Product Types" />
           </ListItem>
         </List>
