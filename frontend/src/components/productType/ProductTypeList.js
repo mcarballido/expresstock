@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { List } from "@material-ui/core";
+import { List, Typography } from "@material-ui/core";
 
 import ProductTypeListItem from "./ProductTypeListItem";
 
@@ -11,17 +11,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ProductTypeList = () => {
+const ProductTypeList = props => {
   const classes = useStyles();
 
   return (
-    <div>
-      <List className={classes.listRoot}>
-        {[0, 1, 2, 3].map(value => {
-          return <ProductTypeListItem key={value} value={value} />;
-        })}
-      </List>
-    </div>
+    <List className={classes.listRoot}>
+      {props.items && props.items.length ? (
+        props.items.map(item => <ProductTypeListItem key={item.id} title={item.name} />)
+      ) : (
+          <Typography align="center" variant="h5">No se encontraron productos</Typography>
+        )}
+    </List>
   );
 };
 

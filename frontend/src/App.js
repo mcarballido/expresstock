@@ -18,7 +18,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import StorageIcon from "@material-ui/icons/Storage";
 import { makeStyles } from "@material-ui/core/styles";
 
-import ProductTypeList from "./components/productType/ProductTypeList";
+import ProductTypePage from "./components/productType/ProductTypePage";
 
 const drawerWidth = 240;
 
@@ -114,7 +114,7 @@ const App = () => {
       </Drawer>
       {/* Container */}
       <Container maxWidth="md">
-        <ProductTypeList />
+        <ProductTypePage />
       </Container>
     </React.Fragment>
   );
